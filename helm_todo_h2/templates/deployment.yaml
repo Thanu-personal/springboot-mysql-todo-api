@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm_todo_h2.fullname" . }}
+  labels:
+    {{- include "helm_todo_h2.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "helm_todo_h2.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "helm_todo_h2.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: todoapp
+        image: {{ .Values.image.repository }}
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
