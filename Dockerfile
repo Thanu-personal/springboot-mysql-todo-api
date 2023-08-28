@@ -1,7 +1,9 @@
+#Use this for Example1 - jenkins
 #FROM openjdk:11.0.15-jre
 #ADD target/*.jar app.jar
 #ENTRYPOINT ["java","-jar","app.jar"]
 
+#Use this for Example2 - jenkins
 # Use an official Maven image as the base image for building
 FROM maven:3.8-openjdk-11 AS build
 
