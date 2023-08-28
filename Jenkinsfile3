@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+
+   
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/jenkins_intgn']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Thanu-personal/springboot-mysql-todo-api']])
+                echo 'successful checkout'
+            }
+        }
+
+        stage('Build and Package') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh 'mvn clean install'
+                  echo 'successful Build and Package'
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    def imageTag = "swayaanthanu/springboot-todo-api-jenkins1:latest"
+                    docker.build(imageTag, '.')
+                    echo 'successful Build Docker Image'
+                }
+            }
+        }
+        
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'ba01f7fb-97f4-4039-bd96-e8ce7964251e', url: 'https://index.docker.io/v1/') {
+                        def imageTag = "swayaanthanu/springboot-todo-api-jenkins1:latest"
+                        docker.image(imageTag).push()
+                        echo 'successful Push to Docker Hub'
+                    }
+                }
+            }
+        }
+        
+       
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Apply Kubernetes configuration
+                    def kubeConfig = readFile 'kubernetes-config.yaml'
+                    sh "echo '${kubeConfig}' | kubectl apply -f -"
+                }
+            }
+        }
+    }
+    
+  }
