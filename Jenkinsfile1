@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_USERNAME = credentials('thanushree@swayaan.com')
+        DOCKER_HUB_USERNAME = credentials('swayaanthanu')
         DOCKER_HUB_PASSWORD = credentials('Ilovepinky@123')
     }
 
@@ -36,7 +36,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://hub.docker.com/repository/docker/swayaanthanu/springboot-todo-api-jenkins1', DOCKER_HUB_USERNAME, DOCKER_HUB_PASSWORD) {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_USERNAME, DOCKER_HUB_PASSWORD) {
                         def imageTag = "swayaanthanu/springboot-todo-api-jenkins1:1.0"
                         docker.image(imageTag).push()
                         echo 'successful Push to Docker Hub'
