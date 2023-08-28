@@ -10,13 +10,15 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                echo 'successful checkout'
             }
         }
 
         stage('Build and Package') {
             steps {
-                withMaven(maven: 'MavenInstallationName') {
+                withMaven(maven: 'Maven') {
                     sh 'mvn clean package'
+                  echo 'successful Build and Package'
                 }
             }
         }
@@ -24,8 +26,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def imageTag = "your-image-name:tag"
+                    def imageTag = "swayaanthanu/springboot-todo-api-jenkins1:1.0"
                     docker.build(imageTag, '.')
+                    echo 'successful Build Docker Image'
                 }
             }
         }
@@ -33,9 +36,10 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://hub.docker.com/repository/docker/swayaanthanu/springboot-todo-api-jenkins1', DOCKER_HUB_USERNAME, DOCKER_HUB_PASSWORD) {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_USERNAME, DOCKER_HUB_PASSWORD) {
                         def imageTag = "swayaanthanu/springboot-todo-api-jenkins1:1.0"
                         docker.image(imageTag).push()
+                        echo 'successful Push to Docker Hub'
                     }
                 }
             }
