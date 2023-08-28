@@ -47,7 +47,8 @@ pipeline {
                     // Apply Kubernetes configuration
                     def kubectlPath = "/c/Program Files/Docker/Docker/resources/bin/kubectl.exe"  
                     def kubeConfig = readFile 'kubernetes-config.yaml'
-                    sh "${kubectlPath} apply -f - <<< \"${kubeConfig}\""
+                    sh "echo '${kubeConfig}' | ${kubectlPath} apply -f -"
+
                    
                 }
             }
