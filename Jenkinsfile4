@@ -26,13 +26,5 @@ pipeline {
             }
         }
     }
-    }
-
-    post {
-        always {
-            // Clean up Helm artifacts if needed
-            sh "helm uninstall ${RELEASE_NAME} ./${CHART_NAME}"
-        }
-    }
-    
+    }  
   }
