@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    environment {
+        HELM_VERSION = "3.5.3" // Change to the desired Helm version
+        CHART_NAME = "Application_helm"
+        RELEASE_NAME = "helmdeployment"
+
+    }
+   stages {
+       
+        stage('Checkout') {
+            steps {
+            	// Replace your generated pipeline script here 
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/vijaynvb/helm_project']])
+                echo 'successful checkout'
+            }
+        }
+        
+        stage ('Helm Deploy') {
+          steps {
+            script {
+                // Replace your generated pipeline script here 
+                kubeconfig(credentialsId: 'e8af095b-b076-40b5-97d6-cf534e7e9d58', serverUrl: 'https://kubernetes.docker.internal:6443') {
+                sh "helm install ${RELEASE_NAME} ./${CHART_NAME}"
+                }
+            }
+        }
+    }
+    }
+    
+  }
