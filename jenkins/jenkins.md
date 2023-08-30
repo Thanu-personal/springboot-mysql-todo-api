@@ -508,11 +508,64 @@ To generate,
 
 
 
-# additional
+# Example 4 : Creating Pipeline to checkout charts and deploy it in kubernetes cluster using HELM
 
-1. Get the simple springboot application helm chart 
-2. Run the helm chart & confirm it is working 
-3. Push the helm chart folder to git 
-4. Use jenkins to automate the deployment 
-        - Pull the chart from the git 
-        - Deploy it in kubernetes cluster 
+1. Click on new item  
+2. Give name as `Example4`
+3. Select `Pipeline`
+4. Click `ok`
+5. Now give decription as `Creating Pipeline to checkout charts and deploy it in kubernetes cluster using HELM`
+6. Scroll down to pipeline 
+7. Select `Pipeline from SCM`
+8. Select SCM as `Git`
+9. Give your project repository url `https://github.com/Thanu-personal/springboot-mysql-todo-api`
+10. Select Branch as `*/jenkins_intgn`
+[Make sure you have kubernetes-config.yaml file]
+11. Scroll down to script path & type the jenkinsfile you want to execute. In my case, I have named it as `Jenkinsfile4` for this example
+[NOTE: Click on pipeline script to generate pipeline script to use kubectl]
+12. Replace the command in `pipeline script`
+13. Apply and save
+14. Now select your pipeline `Example4` and click on `Build now`
+15. You can check the status of your build in `console output`
+
+NOTE: The chart im going to deploy is the `Application_helm` in the repo `https://github.com/vijaynvb/helm_project`. It is an umbrella chart which has 3 microservices charts 
+
+
+## Jenkinsfile content
+
+```
+pipeline {
+    agent any
+    environment {
+        HELM_VERSION = "3.5.3" // Change to the desired Helm version
+        CHART_NAME = "Application_helm"
+        RELEASE_NAME = "helmdeployment"
+
+    }
+   stages {
+       
+        stage('Checkout') {
+            steps {
+            	// Replace your generated pipeline script here 
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/vijaynvb/helm_project']])
+                echo 'successful checkout'
+            }
+        }
+        
+        stage ('Helm Deploy') {
+          steps {
+            script {
+                // Replace your generated pipeline script here 
+                kubeconfig(credentialsId: 'e8af095b-b076-40b5-97d6-cf534e7e9d58', serverUrl: 'https://kubernetes.docker.internal:6443') {
+                sh "helm install ${RELEASE_NAME} ./${CHART_NAME}"
+                }
+            }
+        }
+    }
+    }
+    
+  }
+
+```
+
+
