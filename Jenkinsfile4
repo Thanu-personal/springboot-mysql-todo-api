@@ -20,12 +20,11 @@ pipeline {
           steps {
             script {
                 // Replace your generated pipeline script here 
-                kubeconfig(credentialsId: 'e8af095b-b076-40b5-97d6-cf534e7e9d58', serverUrl: 'https://kubernetes.docker.internal:6443') {
+               kubeconfig(credentialsId: 'e8af095b-b076-40b5-97d6-cf534e7e9d58', serverUrl: 'https://kubernetes.docker.internal:6443') {
                 sh "helm install ${RELEASE_NAME} ./${CHART_NAME}"
-                }
+               } 
             }
         }
     }
-    }
-    
+    }  
   }
