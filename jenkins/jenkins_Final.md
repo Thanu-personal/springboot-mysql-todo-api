@@ -313,7 +313,7 @@ pipeline {
         stage('Checkout') {
             steps {
             	// Replace your generated pipeline script here 
-                checkout scmGit(branches: [[name: '*/jenkins_intgn']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Thanu-personal/springboot-mysql-todo-api']])
+                 checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/vijaynvb/todoapi.git']])
                 echo 'successful checkout'
             }
         }
@@ -321,7 +321,7 @@ pipeline {
         stage('Build jar and image using Docker file ') {
             steps {
                 script {
-                    def imageTag = "swayaanthanu/springboot-todo-api-jenkins1:3.0"
+                    def imageTag = "<username/imagename:tag>"
                     docker.build(imageTag, '.')
                     echo 'successful Build Docker Image'
                 }
@@ -334,7 +334,7 @@ pipeline {
                	 // Replace your generated pipeline script here 
       				// This step should not normally be used in your script. Consult the inline help for details.
                     withDockerRegistry(credentialsId: '98340929-73a9-44aa-abb6-1c3faf40de97', url: 'https://index.docker.io/v1/') {
-                    def imageTag = "swayaanthanu/springboot-todo-api-jenkins1:3.0"
+                    def imageTag = "<username/imagename:tag>"
                     docker.image(imageTag).push()
                     echo 'successful Push to Docker Hub'
                     }
