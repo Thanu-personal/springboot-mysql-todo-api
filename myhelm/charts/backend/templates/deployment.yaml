@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todoapp
+spec:
+  selector:
+    matchLabels:
+      app: todoapp
+  replicas: 1
+  template: # template for the pods
+    metadata:
+      labels:
+        app: todoapp
+    spec:
+      containers:
+      - name: todoapp
+        image: swayaanthanu/springboot-mysql-todo-rest-api
+        env:
+            - name: MYSQL_HOST
+              value: mysql-service

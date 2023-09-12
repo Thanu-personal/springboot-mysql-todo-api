@@ -1,0 +1,6 @@
+dependencies:
+- name: mysql
+  repository: file://../mysql
+  version: 0.1.0
+digest: sha256:f334f3b8face1f80ada8b8acdd1b886269562cf256b1d625060ecf76b767ad9d
+generated: "2023-08-26T19:53:22.2770961+05:30"
