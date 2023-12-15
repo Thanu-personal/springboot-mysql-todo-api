@@ -40,7 +40,8 @@ pipeline {
             steps {
                 script {
                 // Replace your generated pipeline script here 
-                   kubeconfig(credentialsId: 'e8af095b-b076-40b5-97d6-cf534e7e9d58', serverUrl: 'https://kubernetes.docker.internal:6443') {
+                  // kubeconfig(credentialsId: 'e8af095b-b076-40b5-97d6-cf534e7e9d58', serverUrl: 'https://kubernetes.docker.internal:6443') {
+		withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'acc180dd-9f5c-4295-994e-0bd73f025b3d', namespace: '', restrictKubeConfigAccess: false, serverUrl: 'https://127.0.0.1:16443') {
                 	def kubeConfig = readFile 'kubernetes-config.yaml'
                     sh "kubectl apply -f kubernetes-config.yaml"
 					}
