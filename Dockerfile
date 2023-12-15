@@ -1,40 +1,38 @@
 #Use this for Example1 - jenkins
-FROM openjdk:11.0.15-jre
-ADD target/*.jar app.jar
-ENTRYPOINT ["java","-jar","app.jar"]
+#FROM openjdk:11.0.15-jre
+#ADD target/*.jar app.jar
+#ENTRYPOINT ["java","-jar","app.jar"]
 
+#Use this for Example2 - jenkins
+# Use an official Maven image as the base image for building
+FROM maven:3.8-openjdk-11 AS build
 
+# Set the working directory inside the container
+WORKDIR /app
 
-# #Use this for Example2 - jenkins
-# # Use an official Maven image as the base image for building
-# FROM maven:3.8-openjdk-11 AS build
+# Copy the Maven project definition (pom.xml) into the container
+COPY pom.xml .
 
-# # Set the working directory inside the container
-# WORKDIR /app
+# Download the project dependencies
+RUN mvn dependency:go-offline
 
-# # Copy the Maven project definition (pom.xml) into the container
-# COPY pom.xml .
+# Copy the application source code into the container
+COPY src ./src
 
-# # Download the project dependencies
-# RUN mvn dependency:go-offline
+# Build the Spring Boot application JAR
+RUN mvn package
 
-# # Copy the application source code into the container
-# COPY src ./src
+# Use an official OpenJDK runtime image as the base image
+FROM openjdk:11-jre-slim
 
-# # Build the Spring Boot application JAR
-# RUN mvn package
+# Set the working directory inside the container
+WORKDIR /app
 
-# # Use an official OpenJDK runtime image as the base image
-# FROM openjdk:11-jre-slim
+# Copy the Spring Boot JAR from the build stage into the container
+COPY --from=build /app/target/*.jar app.jar
 
-# # Set the working directory inside the container
-# WORKDIR /app
+# Expose the port that the Spring Boot app will listen on
+EXPOSE 8081
 
-# # Copy the Spring Boot JAR from the build stage into the container
-# COPY --from=build /app/target/*.jar app.jar
-
-# # Expose the port that the Spring Boot app will listen on
-# EXPOSE 8081
-
-# # Specify the command to run the Spring Boot app when the container starts
-# CMD ["java", "-jar", "app.jar"]
+# Specify the command to run the Spring Boot app when the container starts
+CMD ["java", "-jar", "app.jar"]
